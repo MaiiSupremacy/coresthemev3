@@ -1,0 +1,477 @@
+/*
+Theme Name: CORES Theme V3
+Theme URI: https://cores-research.org/
+Author: CORES Team
+Author URI: https://cores-research.org/
+Description: Professional Academic & Research Theme tailored for CORES. Features modern Glassmorphism UI, Swiper Carousels, and Interactive Maps.
+Version: 3.0.0
+Requires at least: 6.0
+Tested up to: 6.4
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Tags: academic, research, custom-theme, modern, responsive
+*/
+
+/* =========================================
+   1. VARIABLES & RESET
+   ========================================= */
+:root {
+    /* CORES Color Palette - Ported from Main Page 3.html */
+    --primary: #0A4D68;
+    --secondary: #088395;
+    --accent: #05BFDB;
+    --light: #00FFCA;
+    --dark: #001233;
+    --white: #F5F5F5;
+    --gray: #E0E1DD;
+    --sand: #F4E4C1;
+    
+    /* Glassmorphism Effects */
+    --glass: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    --blur: blur(10px);
+    
+    /* Typography */
+    --font-main: 'Poppins', sans-serif;
+    
+    /* Transitions */
+    --transition: all 0.3s ease;
+    
+    /* Layout */
+    --header-height: 80px;
+    --container-width: 1200px;
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--white);
+    color: var(--dark);
+    line-height: 1.6;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Image defaults */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Link defaults */
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+}
+
+ul {
+    list-style: none;
+}
+
+/* =========================================
+   2. WORDPRESS CORE FIXES
+   ========================================= */
+/* Fix Admin Bar overlapping fixed header */
+body.admin-bar nav {
+    top: 32px;
+}
+@media screen and (max-width: 782px) {
+    body.admin-bar nav { top: 46px; }
+}
+
+/* Hide Gutenberg block margins if they interfere */
+.entry-content > * {
+    margin-bottom: 1.5rem;
+}
+
+/* Fix Container for WordPress Pages */
+.page-container {
+    padding-top: calc(var(--header-height) + 2rem);
+    padding-bottom: 4rem;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* =========================================
+   3. HEADER & NAVIGATION (GLASSMORPHISM)
+   ========================================= */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    transition: var(--transition);
+    /* Default state: Transparent */
+    background: transparent;
+}
+
+/* Scrolled State (Added via JS) */
+nav.scrolled {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    padding: 0.8rem 5%;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-img {
+    height: 50px;
+    width: auto;
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Menu Items */
+.main-nav-ul {
+    display: flex;
+    gap: 2rem;
+    margin: 0;
+}
+
+.main-nav-ul a {
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--dark); /* Default dark for visibility */
+    position: relative;
+    padding: 5px 0;
+}
+
+/* Light text for transparent header on dark hero */
+body.home nav:not(.scrolled) .main-nav-ul a {
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.main-nav-ul a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transition: var(--transition);
+}
+
+.main-nav-ul a:hover::after,
+.main-nav-ul li.current-menu-item a::after {
+    width: 100%;
+}
+
+/* Hamburger (Mobile) */
+.hamburger {
+    display: none;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background-color: var(--primary);
+    transition: var(--transition);
+    border-radius: 3px;
+}
+
+body.home nav:not(.scrolled) .hamburger span {
+    background-color: #fff;
+}
+
+/* =========================================
+   4. HERO SECTION & UI COMPONENTS
+   ========================================= */
+.hero-section {
+    height: 100vh;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0; /* Fixed from V2 */
+}
+
+.hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 18, 51, 0.4);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: #fff;
+    max-width: 900px;
+    padding: 0 20px;
+    animation: fadeUp 1s ease-out;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-title {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    margin-bottom: 2.5rem;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    font-weight: 300;
+}
+
+/* Buttons */
+.cta-button {
+    display: inline-block;
+    padding: 12px 35px;
+    background: linear-gradient(135deg, var(--accent), var(--primary));
+    color: #fff;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    box-shadow: 0 10px 25px rgba(5, 191, 219, 0.4);
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+}
+
+.cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(5, 191, 219, 0.6);
+    color: #fff;
+}
+
+/* Section Titles */
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 3rem;
+    color: var(--primary);
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: 2px;
+}
+
+/* =========================================
+   5. SWIPER CAROUSEL STYLES
+   ========================================= */
+.swiper-container-wrapper {
+    position: relative;
+    padding: 20px 0 50px;
+}
+
+.swiper {
+    width: 100%;
+    padding-bottom: 50px;
+}
+
+.swiper-slide {
+    background-position: center;
+    background-size: cover;
+    width: 300px;
+    height: 400px;
+    border-radius: 20px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+    overflow: hidden;
+    background: #fff;
+}
+
+.swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.swiper-slide:hover img {
+    transform: scale(1.1);
+}
+
+.slide-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transform: translateY(100%);
+    transition: var(--transition);
+    z-index: 2;
+}
+
+.swiper-slide:hover .slide-caption {
+    transform: translateY(0);
+}
+
+.swiper-pagination-bullet-active {
+    background: var(--accent) !important;
+}
+
+/* =========================================
+   6. FOOTER WAVE & LAYOUT
+   ========================================= */
+footer {
+    position: relative;
+    background: var(--primary);
+    color: #fff;
+    padding-top: 100px; /* Space for wave */
+    margin-top: 100px;
+}
+
+.footer-wave {
+    position: absolute;
+    top: -100px;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    overflow: hidden;
+    line-height: 0;
+}
+
+.footer-wave svg {
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 100px;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+    padding: 3rem 5%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+}
+
+.footer-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--light);
+    position: relative;
+    display: inline-block;
+}
+
+.footer-section h3::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--accent);
+}
+
+.footer-links a {
+    display: block;
+    margin-bottom: 0.8rem;
+    opacity: 0.8;
+}
+
+.footer-links a:hover {
+    opacity: 1;
+    color: var(--light);
+    transform: translateX(5px);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+/* =========================================
+   7. RESPONSIVE
+   ========================================= */
+@media (max-width: 768px) {
+    .hamburger { display: flex; }
+    
+    .main-nav-ul {
+        display: none; /* Hidden by default, handled by JS mobile menu */
+    }
+    
+    .hero-title { font-size: 2.5rem; }
+    .section-title { font-size: 2rem; }
+    
+    .swiper-slide {
+        width: 80%; /* Wider slides on mobile */
+        height: 350px;
+    }
+}
